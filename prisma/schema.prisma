@@ -21,8 +21,22 @@ model User {
   isOwner      Boolean   @default(false)
   createdAt    DateTime  @default(now())
 
+  // Bot fields (null for human users)
+  isBot        Boolean   @default(false)
+  botTitle     String?
+  botPersona   String?
+  botVoice     String?
+  botBeat      String?
+  botSource    String?
+  botSourceUrl String?
+  botSourceType String?
+  botParseHint String?
+  botActive    Boolean   @default(true)
+  botOrder     Int?
+
   posts            Post[]
   comments         Comment[]
+  learnings        BotLearning[]
   messagesSent     Message[] @relation("MessagesSent")
   messagesReceived Message[] @relation("MessagesReceived")
 }
@@ -34,6 +48,8 @@ model Post {
   body      String
   images    String[] @default([])
   published Boolean  @default(true)
+  kind      String   @default("post") // "post" | "linkedin"
+  externalUrl String?                  // link to original (e.g. LinkedIn)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -78,6 +94,26 @@ model Message {
 
   @@index([toUserId, read])
   @@index([createdAt])
+}
+
+model BotLearning {
+  id          String   @id @default(cuid())
+  botId       String
+  bot         User     @relation(fields: [botId], references: [id], onDelete: Cascade)
+  summary     String   // what the bot learned/observed
+  sourceTitle String?
+  sourceUrl   String?
+  createdAt   DateTime @default(now())
+
+  @@index([botId, createdAt])
+  @@index([createdAt])
+}
+
+model BotState {
+  id        String   @id @default("singleton")
+  lastOrder Int      @default(-1) // round-robin pointer over bots
+  lastTickAt DateTime?
+  updatedAt DateTime @updatedAt
 }
 
 model PasswordResetToken {

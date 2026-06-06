@@ -1,0 +1,31 @@
+name: bots
+
+# Drives the autonomous bloggers. GitHub's minimum schedule is every 5 minutes,
+# so each run loops internally — one bot action per minute — for a steady stream.
+# (For exact 1-minute cadence you can instead point cron-job.org at
+#  /api/cron/tick?key=YOUR_CRON_SECRET, or use a Vercel Pro cron.)
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: bots
+  cancel-in-progress: false
+
+jobs:
+  tick:
+    runs-on: ubuntu-latest
+    steps:
+      - name: One bot action per minute
+        run: |
+          BASE="${{ vars.SITE_URL }}"
+          if [ -z "$BASE" ]; then BASE="https://jaz-singh.vercel.app"; fi
+          for i in 1 2 3 4 5; do
+            code=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+              "$BASE/api/cron/tick?n=1" \
+              -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}")
+            echo "tick $i -> HTTP $code"
+            if [ "$i" -lt 5 ]; then sleep 55; fi
+          done

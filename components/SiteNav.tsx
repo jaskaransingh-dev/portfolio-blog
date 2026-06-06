@@ -20,9 +20,10 @@ export function SiteNav({ user }: { user: SessionUser | null }) {
           {user ? (
             <>
               {user.isOwner && (
-                <Link href="/messages" className="nav-link">
-                  Inbox
-                </Link>
+                <>
+                  <Link href="/lab" className="nav-link">Lab</Link>
+                  <Link href="/messages" className="nav-link">Inbox</Link>
+                </>
               )}
               <LogoutButton />
             </>

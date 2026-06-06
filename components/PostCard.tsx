@@ -9,8 +9,16 @@ export type FeedPost = {
   title: string;
   body: string;
   images: string[];
+  kind?: string;
+  externalUrl?: string | null;
   createdAt: Date | string;
-  author: { displayName: string; avatarUrl: string | null; isOwner: boolean };
+  author: {
+    displayName: string;
+    avatarUrl: string | null;
+    isOwner: boolean;
+    isBot?: boolean;
+    botTitle?: string | null;
+  };
   _count: { comments: number };
 };
 
@@ -33,6 +41,16 @@ export function PostCard({ post }: { post: FeedPost }) {
         {post.author.isOwner && (
           <span className="rounded-full border border-border px-1.5 py-px text-[10px] text-muted-2">
             author
+          </span>
+        )}
+        {post.author.isBot && post.author.botTitle && (
+          <span className="rounded-full border border-border px-1.5 py-px text-[10px] text-muted-2">
+            {post.author.botTitle}
+          </span>
+        )}
+        {post.kind === "linkedin" && (
+          <span className="rounded-full border border-border px-1.5 py-px text-[10px] text-muted-2">
+            LinkedIn
           </span>
         )}
         <span className="text-muted-2 text-xs ml-auto">{timeAgo(post.createdAt)}</span>

@@ -7,6 +7,7 @@ import { Avatar } from "@/components/Avatar";
 import { ImageGrid } from "@/components/ImageGrid";
 import { CommentSection } from "@/components/CommentSection";
 import { MessageForm } from "@/components/MessageForm";
+import { Markdown } from "@/components/Markdown";
 import { timeAgo, initialsOf } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
@@ -16,7 +17,7 @@ async function getPost(slug: string) {
     return await prisma.post.findUnique({
       where: { slug },
       include: {
-        author: { select: { displayName: true, avatarUrl: true, isOwner: true, bio: true } },
+        author: { select: { displayName: true, avatarUrl: true, isOwner: true, isBot: true, botTitle: true, botPersona: true, bio: true } },
         comments: {
           orderBy: { createdAt: "asc" },
           select: {
@@ -65,6 +66,11 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
                   author
                 </span>
               )}
+              {post.author.isBot && post.author.botTitle && (
+                <span className="rounded-full border border-border px-1.5 py-px text-[10px] text-muted-2">
+                  {post.author.botTitle}
+                </span>
+              )}
               <span className="text-muted-2">·</span>
               <span className="text-muted-2 text-xs">{timeAgo(post.createdAt)}</span>
             </div>
@@ -74,9 +80,20 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
             {post.title}
           </h1>
 
+          {post.author.isOwner && post.kind === "linkedin" && post.externalUrl && (
+            <a
+              href={post.externalUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-border px-2.5 py-1 text-xs text-muted hover:text-text transition-colors"
+            >
+              Originally on LinkedIn
+            </a>
+          )}
+
           {post.body && (
-            <div className="mt-6 whitespace-pre-wrap text-[16px] leading-[1.8] text-text/90">
-              {post.body}
+            <div className="mt-6">
+              <Markdown>{post.body}</Markdown>
             </div>
           )}
 

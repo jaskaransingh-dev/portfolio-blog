@@ -1,14 +1,13 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export function Composer({ displayName }: { displayName: string }) {
-  const router = useRouter();
+  const router  = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
   const taRef   = useRef<HTMLTextAreaElement>(null);
 
-  const [title,    setTitle]    = useState("");
   const [body,     setBody]     = useState("");
   const [images,   setImages]   = useState<string[]>([]);
   const [uploading,setUploading]= useState(false);
@@ -17,23 +16,33 @@ export function Composer({ displayName }: { displayName: string }) {
   const [open,     setOpen]     = useState(false);
 
   const firstName = displayName.split(/\s+/)[0];
-  const canPost   = (body.trim() || title.trim() || images.length) && !posting;
+  const canPost   = (body.trim() || images.length) && !posting;
+
+  // Respond to the global "n" shortcut / cross-page compose intent.
+  useEffect(() => {
+    function openAndFocus() { setOpen(true); setTimeout(() => taRef.current?.focus(), 30); }
+    window.addEventListener("jaz:compose", openAndFocus);
+    try {
+      if (sessionStorage.getItem("jaz:compose") === "1") {
+        sessionStorage.removeItem("jaz:compose");
+        openAndFocus();
+      }
+    } catch {}
+    return () => window.removeEventListener("jaz:compose", openAndFocus);
+  }, []);
 
   function grow() {
-    const ta = taRef.current;
-    if (!ta) return;
+    const ta = taRef.current; if (!ta) return;
     ta.style.height = "auto";
-    ta.style.height = Math.min(ta.scrollHeight, 480) + "px";
+    ta.style.height = Math.min(ta.scrollHeight, 520) + "px";
   }
 
   async function onFiles(e: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files ?? []);
     if (!files.length) return;
-    setError(null);
-    setUploading(true);
+    setError(null); setUploading(true);
     for (const file of files.slice(0, 8 - images.length)) {
-      const fd = new FormData();
-      fd.append("file", file);
+      const fd = new FormData(); fd.append("file", file);
       const res  = await fetch("/api/upload", { method: "POST", body: fd });
       const data = await res.json();
       if (!res.ok) { setError(data.error ?? "Upload failed."); break; }
@@ -44,45 +53,44 @@ export function Composer({ displayName }: { displayName: string }) {
   }
 
   async function post() {
-    setError(null);
-    setPosting(true);
+    setError(null); setPosting(true);
     const res  = await fetch("/api/posts", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, body, images }),
+      body: JSON.stringify({ body, images }),
     });
     const data = await res.json();
     if (!res.ok) { setError(data.error ?? "Could not post."); setPosting(false); return; }
-    setTitle(""); setBody(""); setImages([]); setOpen(false);
+    setBody(""); setImages([]); setOpen(false);
     if (taRef.current) taRef.current.style.height = "auto";
     router.refresh();
     setPosting(false);
   }
 
+  function onKeyDown(e: React.KeyboardEvent) {
+    if ((e.metaKey || e.ctrlKey) && e.key === "Enter" && canPost) { e.preventDefault(); post(); }
+  }
+
   if (!open) {
     return (
       <button
-        onClick={() => setOpen(true)}
-        className="w-full rounded-xl border border-border bg-surface px-4 py-3 text-left text-sm text-muted-2 transition-colors hover:border-border-strong hover:text-muted"
+        onClick={() => { setOpen(true); setTimeout(() => taRef.current?.focus(), 30); }}
+        className="flex w-full items-center justify-between rounded-xl border border-border bg-surface px-4 py-3 text-left text-sm text-muted-2 transition-colors hover:border-border-strong hover:text-muted"
       >
-        What&apos;s on your mind, {firstName}?
+        <span>What&apos;s on your mind, {firstName}?</span>
+        <kbd className="rounded border border-border px-1.5 py-0.5 font-mono text-[10px]">n</kbd>
       </button>
     );
   }
 
   return (
     <div className="rounded-xl border border-border-strong bg-surface p-4 anim-slide-down">
-      <input
-        value={title}
-        onChange={e => setTitle(e.target.value)}
-        placeholder="Title (optional)"
-        className="w-full bg-transparent text-base font-medium outline-none placeholder:text-muted-2 mb-2"
-      />
       <textarea
         ref={taRef}
         value={body}
         onChange={e => { setBody(e.target.value); grow(); }}
-        placeholder="Write something..."
+        onKeyDown={onKeyDown}
+        placeholder="Write something. Markdown works. The first line becomes the title."
         rows={3}
         className="w-full resize-none bg-transparent text-[15px] leading-relaxed outline-none placeholder:text-muted-2"
       />
@@ -96,9 +104,7 @@ export function Composer({ displayName }: { displayName: string }) {
               <button
                 onClick={() => setImages(p => p.filter(u => u !== url))}
                 className="absolute right-1 top-1 rounded-full bg-black/70 px-1.5 text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                x
-              </button>
+              >x</button>
             </div>
           ))}
         </div>
@@ -112,20 +118,19 @@ export function Composer({ displayName }: { displayName: string }) {
             onClick={() => fileRef.current?.click()}
             disabled={uploading || images.length >= 8}
             className="text-xs text-muted hover:text-text transition-colors disabled:opacity-40"
-          >
-            {uploading ? "Uploading..." : "Add photo"}
-          </button>
+          >{uploading ? "Uploading..." : "Add photo"}</button>
           <button
-            onClick={() => { setOpen(false); setTitle(""); setBody(""); setImages([]); }}
+            onClick={() => { setOpen(false); setBody(""); setImages([]); }}
             className="text-xs text-muted-2 hover:text-muted transition-colors"
-          >
-            Cancel
-          </button>
+          >Cancel</button>
         </div>
         <input ref={fileRef} type="file" accept="image/*" multiple hidden onChange={onFiles} />
-        <button onClick={post} disabled={!canPost} className="btn-primary py-1.5 px-4 text-xs">
-          {posting ? "Posting..." : "Post"}
-        </button>
+        <div className="flex items-center gap-2.5">
+          <span className="hidden sm:inline text-[10px] text-muted-2 font-mono">⌘↵</span>
+          <button onClick={post} disabled={!canPost} className="btn-primary py-1.5 px-4 text-xs">
+            {posting ? "Posting..." : "Post"}
+          </button>
+        </div>
       </div>
     </div>
   );

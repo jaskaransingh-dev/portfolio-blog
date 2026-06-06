@@ -33,7 +33,7 @@ export default async function AboutPage() {
             <div className="mt-3 flex items-center gap-4 text-xs text-muted-2">
               <a href={profile.links.linkedin} target="_blank" rel="noreferrer" className="hover:text-text transition-colors">LinkedIn</a>
               <a href={profile.links.github} target="_blank" rel="noreferrer" className="hover:text-text transition-colors">GitHub</a>
-              <a href={`mailto:${profile.email}`} className="hover:text-text transition-colors">{profile.email}</a>
+              <Link href="/contact" className="hover:text-text transition-colors">Message me</Link>
             </div>
           </div>
         </div>

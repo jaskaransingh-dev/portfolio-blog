@@ -22,8 +22,8 @@ async function getPosts(): Promise<FeedPost[]> {
       take: 60,
       select: {
         id: true, slug: true, title: true, body: true,
-        images: true, createdAt: true,
-        author: { select: { displayName: true, avatarUrl: true, isOwner: true } },
+        images: true, kind: true, externalUrl: true, createdAt: true,
+        author: { select: { displayName: true, avatarUrl: true, isOwner: true, isBot: true, botTitle: true } },
         _count: { select: { comments: true } },
       },
     });
