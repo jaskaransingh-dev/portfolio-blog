@@ -18,7 +18,7 @@ export function Avatar({
 
   return (
     <div
-      className={`relative shrink-0 overflow-hidden rounded-full bg-surface-2 ring-1 ring-border-strong ${className}`}
+      className={`relative shrink-0 overflow-hidden rounded-full bg-surface-2 ring-1 ring-border ${className}`}
       style={{ width: size, height: size }}
     >
       {showImage ? (

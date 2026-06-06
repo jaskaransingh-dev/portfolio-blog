@@ -1,58 +1,31 @@
-// A friendlier take on passwords. Instead of inventing something hard to
-// remember, we offer two delightful, secure options:
-//   1. A memorable word passphrase  →  "amber-otter-maple-74"
-//   2. An emoji passcode            →  "🌙🚀🎧🔥"
-// Both are stored hashed exactly like any other password.
+// Memorable passphrase generator — three words and two digits.
+// e.g. "amber-otter-maple-74"
 
-const ADJECTIVES = [
-  "amber", "brisk", "calm", "clever", "cosmic", "crimson", "dapper", "eager",
-  "fuzzy", "gentle", "golden", "happy", "humble", "ivory", "jolly", "keen",
-  "lucky", "lunar", "mellow", "nimble", "noble", "olive", "plucky", "quiet",
-  "rapid", "rustic", "sage", "scarlet", "silver", "snug", "solar", "spry",
-  "sturdy", "sunny", "swift", "teal", "tidy", "velvet", "vivid", "witty",
-];
-
-const NOUNS = [
-  "otter", "maple", "comet", "harbor", "falcon", "willow", "ember", "river",
-  "cedar", "lynx", "meadow", "quartz", "raven", "summit", "thicket", "tundra",
-  "anchor", "beacon", "cobble", "dune", "fjord", "glade", "heron", "isle",
-  "kelp", "lantern", "marsh", "nectar", "orchard", "pebble", "reef", "spruce",
+const WORDS = [
+  "amber","birch","brisk","calm","cedar","cobalt","cosmic","crisp","dune","eager",
+  "ember","fern","fjord","flint","frost","glade","golden","grove","haven","heron",
+  "humble","ivory","jade","jolly","keen","lantern","lucid","lunar","marble","meadow",
+  "mellow","nimble","noble","north","ocean","olive","orbit","pebble","pine","plum",
+  "quartz","quiet","rapid","reef","ridge","rustic","sage","scarlet","silver","slate",
+  "solar","spry","summit","swift","teal","thatch","tidal","timber","velvet","vivid",
+  "willow","winter","witty","zenith",
 ];
 
 function pick<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-// e.g. "amber-otter-maple-74" — three words plus two digits.
 export function generatePassphrase(): string {
-  const a = pick(ADJECTIVES);
-  const b = pick(NOUNS);
-  const c = pick(NOUNS.filter((n) => n !== b));
+  const a = pick(WORDS);
+  const b = pick(WORDS.filter(w => w !== a));
+  const c = pick(WORDS.filter(w => w !== a && w !== b));
   const n = Math.floor(Math.random() * 90) + 10;
   return `${a}-${b}-${c}-${n}`;
 }
 
-export const EMOJI_PALETTE = [
-  "🌙", "🚀", "🎧", "🔥", "🌊", "🍕", "⚡", "🎲",
-  "🪐", "🦊", "🌵", "🎸", "🧠", "🪄", "🛰️", "🍀",
-  "👾", "🦉", "🌈", "🧩", "🎯", "🦄", "🍩", "🗝️",
-];
-
-// An emoji passcode is just a string of emoji used as the password value.
-export function isEmojiPasscode(value: string): boolean {
-  // Heuristic: contains at least one emoji and no spaces.
-  return /\p{Extended_Pictographic}/u.test(value) && !/\s/.test(value);
-}
-
-export function passwordStrengthHint(value: string): string {
+export function passwordHint(value: string): string {
   if (!value) return "";
-  if (isEmojiPasscode(value)) {
-    const count = [...value.match(/\p{Extended_Pictographic}/gu) ?? []].length;
-    if (count < 4) return "Pick at least 4 emoji for a strong passcode.";
-    return "Nice emoji passcode 🔐";
-  }
-  if (value.length < 8) return "A little short — aim for 8+ characters.";
-  if (value.includes("-") && value.split("-").length >= 3)
-    return "Great — a memorable passphrase.";
-  return "Looks good.";
+  if (value.length < 6) return "A bit short — aim for 6 or more characters.";
+  if (value.includes("-") && value.split("-").length >= 3) return "Nice passphrase — easy to remember.";
+  return "";
 }

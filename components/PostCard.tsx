@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { Avatar } from "@/components/Avatar";
 import { ImageGrid } from "@/components/ImageGrid";
 import { timeAgo, initialsOf } from "@/lib/format";
+import { Avatar } from "@/components/Avatar";
 
 export type FeedPost = {
   id: string;
@@ -16,61 +16,60 @@ export type FeedPost = {
 
 export function PostCard({ post }: { post: FeedPost }) {
   const excerpt =
-    post.body.length > 280 ? post.body.slice(0, 280).trimEnd() + "…" : post.body;
+    post.body.length > 300
+      ? post.body.slice(0, 300).trimEnd() + "..."
+      : post.body;
 
   return (
-    <article className="rounded-2xl border border-border bg-surface p-5 transition-colors hover:border-border-strong">
-      <div className="flex items-center gap-3">
+    <article className="border-b border-border py-8 last:border-0">
+      {/* Author row */}
+      <div className="flex items-center gap-2.5 mb-4">
         <Avatar
           src={post.author.avatarUrl}
           initials={initialsOf(post.author.displayName)}
-          size={36}
+          size={28}
         />
-        <div className="min-w-0">
-          <div className="flex items-center gap-1.5">
-            <span className="truncate text-sm font-medium text-foreground">
-              {post.author.displayName}
-            </span>
-            {post.author.isOwner && (
-              <span className="rounded-full bg-surface-2 px-1.5 py-0.5 text-[10px] font-medium text-muted">
-                author
-              </span>
-            )}
-          </div>
-          <span className="text-xs text-muted-2">{timeAgo(post.createdAt)}</span>
-        </div>
+        <span className="text-sm text-muted">{post.author.displayName}</span>
+        {post.author.isOwner && (
+          <span className="rounded-full border border-border px-1.5 py-px text-[10px] text-muted-2">
+            author
+          </span>
+        )}
+        <span className="text-muted-2 text-xs ml-auto">{timeAgo(post.createdAt)}</span>
       </div>
 
-      <Link href={`/blog/${post.slug}`} className="group mt-3 block">
-        <h2 className="text-lg font-semibold leading-snug tracking-tight text-foreground group-hover:underline">
+      {/* Title + body */}
+      <Link href={`/posts/${post.slug}`} className="group block">
+        <h2 className="serif text-2xl font-normal leading-snug text-text group-hover:text-amber transition-colors">
           {post.title}
         </h2>
         {excerpt && (
-          <p className="mt-1.5 whitespace-pre-wrap text-[15px] leading-relaxed text-muted">
+          <p className="mt-2.5 text-[15px] leading-relaxed text-muted whitespace-pre-wrap line-clamp-4">
             {excerpt}
           </p>
         )}
       </Link>
 
+      {/* Images */}
       {post.images.length > 0 && (
-        <Link href={`/blog/${post.slug}`} className="mt-3 block">
+        <Link href={`/posts/${post.slug}`} className="mt-4 block">
           <ImageGrid images={post.images} />
         </Link>
       )}
 
-      <div className="mt-4 flex items-center gap-4 text-xs text-muted-2">
+      {/* Footer */}
+      <div className="mt-4 flex items-center gap-5 text-xs text-muted-2">
         <Link
-          href={`/blog/${post.slug}#comments`}
-          className="transition-colors hover:text-foreground"
+          href={`/posts/${post.slug}#comments`}
+          className="transition-colors hover:text-text"
         >
-          💬 {post._count.comments}{" "}
-          {post._count.comments === 1 ? "comment" : "comments"}
+          {post._count.comments} {post._count.comments === 1 ? "comment" : "comments"}
         </Link>
         <Link
-          href={`/blog/${post.slug}`}
-          className="transition-colors hover:text-foreground"
+          href={`/posts/${post.slug}`}
+          className="transition-colors hover:text-text"
         >
-          Read →
+          Read
         </Link>
       </div>
     </article>

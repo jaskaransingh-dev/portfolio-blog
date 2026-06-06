@@ -1,47 +1,32 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, DM_Serif_Display } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
+const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+const dmSerif  = DM_Serif_Display({
+  variable: "--font-dm-serif",
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://jaskaransingh.dev"),
-  title: {
-    default: "Jaskaran Singh",
-    template: "%s — Jaskaran Singh",
-  },
+  metadataBase: new URL("https://jaz-singh.vercel.app"),
+  title: { default: "Jaz Singh", template: "%s — Jaz Singh" },
   description:
-    "Jaskaran Singh — software engineer building TrueMile.AI. AI dispatch, fintech, and applied ML. Statistics & Data Science at UCLA.",
-  openGraph: {
-    title: "Jaskaran Singh",
-    description:
-      "Software engineer building TrueMile.AI. AI dispatch, fintech, and applied ML.",
-    type: "website",
-  },
+    "Writing, building, and thinking out loud. Jaskaran Singh — software engineer and founder, studying Statistics at UCLA.",
+  openGraph: { title: "Jaz Singh", type: "website" },
   twitter: { card: "summary_large_image" },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${dmSerif.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-background text-foreground">
-        {children}
-      </body>
+      <body className="min-h-full flex flex-col bg-bg text-text">{children}</body>
     </html>
   );
 }
