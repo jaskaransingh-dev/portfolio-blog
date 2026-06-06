@@ -1,147 +1,119 @@
 @import "tailwindcss";
 
+/* ── Apple-dark system ────────────────────────────────── */
 :root {
-  --bg:            #0e0d0b;
-  --surface:       #161511;
-  --surface-2:     #1e1c17;
-  --border:        #2a2822;
-  --border-strong: #3d3a32;
-  --text:          #e8e2d6;
-  --muted:         #7a7264;
-  --muted-2:       #504a42;
-  --amber:         #c8943a;
-  --amber-dim:     #8a6428;
+  /* Backgrounds (iOS dark mode) */
+  --bg:        #000000;
+  --surface:   #1c1c1e;
+  --surface-2: #2c2c2e;
+  --surface-3: #3a3a3c;
+
+  /* Borders / separators */
+  --border:        rgba(84,84,88,0.35);
+  --border-strong: rgba(84,84,88,0.65);
+
+  /* Labels (iOS dark mode) */
+  --text:     #ffffff;
+  --muted:    rgba(235,235,245,0.60);
+  --muted-2:  rgba(235,235,245,0.30);
+  --muted-3:  rgba(235,235,245,0.15);
+
+  /* Apple warm accents */
+  --orange:   #ff9500;   /* System Orange */
+  --amber:    #ff9f0a;   /* slightly warmer */
+  --yellow:   #ffd60a;   /* System Yellow */
+  --orange-dim: rgba(255,149,0,0.18);
+  --orange-mid: rgba(255,149,0,0.35);
 }
 
 @theme inline {
-  --color-bg:            var(--bg);
-  --color-surface:       var(--surface);
-  --color-surface-2:     var(--surface-2);
-  --color-border:        var(--border);
+  --color-bg:          var(--bg);
+  --color-surface:     var(--surface);
+  --color-surface-2:   var(--surface-2);
+  --color-surface-3:   var(--surface-3);
+  --color-border:      var(--border);
   --color-border-strong: var(--border-strong);
-  --color-text:          var(--text);
-  --color-muted:         var(--muted);
-  --color-muted-2:       var(--muted-2);
-  --color-amber:         var(--amber);
-  --color-amber-dim:     var(--amber-dim);
-  --font-sans:           var(--font-geist-sans);
-  --font-mono:           var(--font-geist-mono);
-  --font-serif:          var(--font-dm-serif);
+  --color-text:        var(--text);
+  --color-muted:       var(--muted);
+  --color-muted-2:     var(--muted-2);
+  --color-muted-3:     var(--muted-3);
+  --color-orange:      var(--orange);
+  --color-amber:       var(--amber);
+  --color-yellow:      var(--yellow);
+  --color-orange-dim:  var(--orange-dim);
+  --color-orange-mid:  var(--orange-mid);
+  --font-sans:         var(--font-geist-sans);
+  --font-mono:         var(--font-geist-mono);
+  --font-serif:        var(--font-dm-serif);
 }
 
 * { border-color: var(--border); }
-
-html {
-  color-scheme: dark;
-  scroll-behavior: smooth;
-}
+html { color-scheme: dark; scroll-behavior: smooth; }
 
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: var(--font-sans), -apple-system, sans-serif;
+  font-family: var(--font-sans), -apple-system, "SF Pro Display", sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-::selection { background: rgba(200, 148, 58, 0.2); }
+::selection {
+  background: rgba(255,149,0,0.28);
+  color: var(--text);
+}
 
 /* ── Typography ──────────────────────────────────────── */
 .serif { font-family: var(--font-serif), Georgia, serif; }
 
-/* ── Links ───────────────────────────────────────────── */
-.link-underline {
-  color: var(--text);
+/* ── Links & interactive text ────────────────────────── */
+/* Orange link — used on all inline prose links */
+.link {
+  color: var(--orange);
+  text-decoration: none;
+  transition: color 0.12s, opacity 0.12s;
+}
+.link:hover { color: var(--amber); }
+
+/* Subtle underline link (body prose) */
+.link-subtle {
+  color: var(--muted);
   text-decoration: underline;
   text-decoration-color: var(--border-strong);
   text-underline-offset: 3px;
-  transition: text-decoration-color 0.15s;
+  transition: color 0.12s, text-decoration-color 0.12s;
 }
-.link-underline:hover { text-decoration-color: var(--muted); }
-
-.link-amber {
-  color: var(--amber);
-  text-decoration: none;
-  transition: color 0.15s;
+.link-subtle:hover {
+  color: var(--orange);
+  text-decoration-color: var(--orange-mid);
 }
-.link-amber:hover { color: #e0a84a; }
 
+/* Nav / quiet link */
 .nav-link {
   color: var(--muted);
-  transition: color 0.15s;
+  transition: color 0.12s;
 }
 .nav-link:hover { color: var(--text); }
 
-/* ── Scrollbar ───────────────────────────────────────── */
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-thumb {
-  background: var(--border-strong);
-  border-radius: 999px;
-  border: 2px solid var(--bg);
-}
-
-/* ── Animations ──────────────────────────────────────── */
-@keyframes fade-up {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-@keyframes slide-down {
-  from { opacity: 0; transform: translateY(-6px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.anim-fade-up  { animation: fade-up  0.55s cubic-bezier(0.16,1,0.3,1) both; }
-.anim-fade-in  { animation: fade-in  0.4s ease both; }
-.anim-slide-down { animation: slide-down 0.35s cubic-bezier(0.16,1,0.3,1) both; }
-
-.anim-stagger > * { animation: fade-up 0.55s cubic-bezier(0.16,1,0.3,1) both; }
-.anim-stagger > *:nth-child(1) { animation-delay: 0.05s; }
-.anim-stagger > *:nth-child(2) { animation-delay: 0.10s; }
-.anim-stagger > *:nth-child(3) { animation-delay: 0.15s; }
-.anim-stagger > *:nth-child(4) { animation-delay: 0.20s; }
-.anim-stagger > *:nth-child(5) { animation-delay: 0.25s; }
-.anim-stagger > *:nth-child(6) { animation-delay: 0.30s; }
-.anim-stagger > *:nth-child(7) { animation-delay: 0.35s; }
-.anim-stagger > *:nth-child(8) { animation-delay: 0.40s; }
-.anim-stagger > *:nth-child(n+9) { animation-delay: 0.45s; }
-
-/* ── Form inputs ─────────────────────────────────────── */
-.input {
-  width: 100%;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 0.625rem 0.875rem;
-  font-size: 0.875rem;
-  color: var(--text);
-  outline: none;
-  transition: border-color 0.15s;
-}
-.input:focus { border-color: var(--border-strong); }
-.input::placeholder { color: var(--muted-2); }
-
-/* ── Btn ─────────────────────────────────────────────── */
+/* ── Buttons ─────────────────────────────────────────── */
 .btn-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.375rem;
-  padding: 0.5rem 1.25rem;
-  background: var(--text);
-  color: var(--bg);
+  padding: 0.5rem 1.125rem;
+  background: var(--orange);
+  color: #000;
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 600;
   border-radius: 999px;
   border: none;
   cursor: pointer;
-  transition: opacity 0.15s;
+  transition: opacity 0.12s, background 0.12s;
+  letter-spacing: -0.01em;
 }
-.btn-primary:hover:not(:disabled) { opacity: 0.88; }
-.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-primary:hover:not(:disabled) { background: var(--amber); opacity: 0.92; }
+.btn-primary:disabled { opacity: 0.35; cursor: not-allowed; }
 
 .btn-ghost {
   display: inline-flex;
@@ -149,11 +121,101 @@ body {
   gap: 0.375rem;
   padding: 0.375rem 0.875rem;
   background: transparent;
-  color: var(--muted);
+  color: var(--orange);
   font-size: 0.875rem;
+  font-weight: 500;
   border-radius: 999px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--orange-mid);
   cursor: pointer;
-  transition: color 0.15s, border-color 0.15s;
+  transition: border-color 0.12s, background 0.12s, color 0.12s;
 }
-.btn-ghost:hover { color: var(--text); border-color: var(--border-strong); }
+.btn-ghost:hover { background: var(--orange-dim); border-color: var(--orange); }
+
+/* ── Form inputs ─────────────────────────────────────── */
+.input {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.875rem;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.12s, box-shadow 0.12s;
+}
+.input:focus {
+  border-color: var(--orange);
+  box-shadow: 0 0 0 3px var(--orange-dim);
+}
+.input::placeholder { color: var(--muted-2); }
+
+/* ── Orange badge / tag ──────────────────────────────── */
+.badge-orange {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 1px 7px;
+  font-size: 10px;
+  font-weight: 500;
+  background: var(--orange-dim);
+  color: var(--orange);
+  border: 1px solid var(--orange-mid);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 1px 7px;
+  font-size: 10px;
+  border: 1px solid var(--border-strong);
+  color: var(--muted-2);
+}
+
+/* ── Orange accent bar (left border on cards/items) ───── */
+.accent-bar {
+  border-left: 2px solid var(--orange);
+  padding-left: 0.875rem;
+}
+
+/* ── Scrollbar ───────────────────────────────────────── */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb {
+  background: var(--surface-3);
+  border-radius: 999px;
+  border: 2px solid var(--bg);
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(84,84,88,0.9); }
+
+/* ── Animations ──────────────────────────────────────── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slide-down {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse-orange {
+  0%,100% { box-shadow: 0 0 0 0 var(--orange-dim); }
+  50%      { box-shadow: 0 0 0 6px transparent; }
+}
+
+.anim-fade-up    { animation: fade-up   0.5s cubic-bezier(0.16,1,0.3,1) both; }
+.anim-fade-in    { animation: fade-in   0.35s ease both; }
+.anim-slide-down { animation: slide-down 0.3s cubic-bezier(0.16,1,0.3,1) both; }
+
+.anim-stagger > * { animation: fade-up 0.5s cubic-bezier(0.16,1,0.3,1) both; }
+.anim-stagger > *:nth-child(1) { animation-delay: 0.04s; }
+.anim-stagger > *:nth-child(2) { animation-delay: 0.08s; }
+.anim-stagger > *:nth-child(3) { animation-delay: 0.12s; }
+.anim-stagger > *:nth-child(4) { animation-delay: 0.16s; }
+.anim-stagger > *:nth-child(5) { animation-delay: 0.20s; }
+.anim-stagger > *:nth-child(6) { animation-delay: 0.24s; }
+.anim-stagger > *:nth-child(7) { animation-delay: 0.28s; }
+.anim-stagger > *:nth-child(n+8) { animation-delay: 0.32s; }
+
+/* ── Markdown prose ──────────────────────────────────── */
+.md a { color: var(--orange); transition: color 0.12s; }
+.md a:hover { color: var(--amber); }

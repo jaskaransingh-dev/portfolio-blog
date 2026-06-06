@@ -24,69 +24,53 @@ export type FeedPost = {
 
 export function PostCard({ post }: { post: FeedPost }) {
   const excerpt =
-    post.body.length > 300
-      ? post.body.slice(0, 300).trimEnd() + "..."
-      : post.body;
+    post.body.length > 280 ? post.body.slice(0, 280).trimEnd() + "..." : post.body;
 
   return (
-    <article className="border-b border-border py-8 last:border-0">
-      {/* Author row */}
-      <div className="flex items-center gap-2.5 mb-4">
-        <Avatar
-          src={post.author.avatarUrl}
-          initials={initialsOf(post.author.displayName)}
-          size={28}
-        />
-        <span className="text-sm text-muted">{post.author.displayName}</span>
+    <article className="border-b border-border py-7 last:border-0">
+      {/* Byline */}
+      <div className="flex items-center gap-2 mb-3">
+        <Avatar src={post.author.avatarUrl} initials={initialsOf(post.author.displayName)} size={26} />
+        <span className="text-xs font-medium text-muted">{post.author.displayName}</span>
+
         {post.author.isOwner && (
-          <span className="rounded-full border border-border px-1.5 py-px text-[10px] text-muted-2">
-            author
-          </span>
+          <span className="badge-orange">author</span>
         )}
         {post.author.isBot && post.author.botTitle && (
-          <span className="rounded-full border border-border px-1.5 py-px text-[10px] text-muted-2">
-            {post.author.botTitle}
-          </span>
+          <span className="badge">{post.author.botTitle}</span>
         )}
         {post.kind === "linkedin" && (
-          <span className="rounded-full border border-border px-1.5 py-px text-[10px] text-muted-2">
-            LinkedIn
-          </span>
+          <span className="badge">LinkedIn</span>
         )}
-        <span className="text-muted-2 text-xs ml-auto">{timeAgo(post.createdAt)}</span>
+        <span className="ml-auto text-xs" style={{ color: "var(--muted-2)" }}>
+          {timeAgo(post.createdAt)}
+        </span>
       </div>
 
-      {/* Title + body */}
+      {/* Content */}
       <Link href={`/posts/${post.slug}`} className="group block">
-        <h2 className="serif text-2xl font-normal leading-snug text-text group-hover:text-amber transition-colors">
+        <h2 className="serif text-xl font-normal leading-snug text-text transition-colors group-hover:text-orange">
           {post.title}
         </h2>
         {excerpt && (
-          <p className="mt-2.5 text-[15px] leading-relaxed text-muted whitespace-pre-wrap line-clamp-4">
+          <p className="mt-2 text-[14px] leading-relaxed line-clamp-3" style={{ color: "var(--muted)" }}>
             {excerpt}
           </p>
         )}
       </Link>
 
-      {/* Images */}
       {post.images.length > 0 && (
-        <Link href={`/posts/${post.slug}`} className="mt-4 block">
+        <Link href={`/posts/${post.slug}`} className="mt-3 block">
           <ImageGrid images={post.images} />
         </Link>
       )}
 
       {/* Footer */}
-      <div className="mt-4 flex items-center gap-5 text-xs text-muted-2">
-        <Link
-          href={`/posts/${post.slug}#comments`}
-          className="transition-colors hover:text-text"
-        >
+      <div className="mt-3 flex items-center gap-4 text-xs" style={{ color: "var(--muted-2)" }}>
+        <Link href={`/posts/${post.slug}#comments`} className="hover:text-orange transition-colors">
           {post._count.comments} {post._count.comments === 1 ? "comment" : "comments"}
         </Link>
-        <Link
-          href={`/posts/${post.slug}`}
-          className="transition-colors hover:text-text"
-        >
+        <Link href={`/posts/${post.slug}`} className="hover:text-orange transition-colors">
           Read
         </Link>
       </div>

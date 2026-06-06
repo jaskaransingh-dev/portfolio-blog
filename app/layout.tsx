@@ -5,7 +5,7 @@ import { CommandLayer } from "@/components/CommandLayer";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
-const dmSerif  = DM_Serif_Display({
+const dmSerif   = DM_Serif_Display({
   variable: "--font-dm-serif",
   subsets: ["latin"],
   weight: "400",
@@ -14,10 +14,9 @@ const dmSerif  = DM_Serif_Display({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://jaz-singh.vercel.app"),
-  title: { default: "Jaz Singh", template: "%s — Jaz Singh" },
-  description:
-    "Writing, building, and thinking out loud. Jaskaran Singh — software engineer and founder, studying Statistics at UCLA.",
-  openGraph: { title: "Jaz Singh", type: "website" },
+  title: { default: "theblog", template: "%s — theblog" },
+  description: "Writing, ideas, and things worth reading.",
+  openGraph: { title: "theblog", type: "website" },
   twitter: { card: "summary_large_image" },
 };
 

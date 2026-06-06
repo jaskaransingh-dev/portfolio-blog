@@ -54,7 +54,7 @@ export function CommandLayer() {
   const commands: Cmd[] = [
     { label: "New post",        hint: "n",   run: newPost, show: authed },
     { label: "Go to feed",      hint: "g h", run: () => go("/") },
-    { label: "Go to work",      hint: "g w", run: () => go("/about") },
+    { label: "Profile / dash",  hint: "g d", run: () => go("/dash"), show: authed },
     { label: "The lab (bots)",  hint: "g l", run: () => go("/lab"), show: owner },
     { label: "Inbox",           hint: "g i", run: () => go("/messages"), show: owner },
     { label: "Import LinkedIn", run: () => go("/import"), show: owner },
@@ -93,7 +93,7 @@ export function CommandLayer() {
         gPressed.current = false;
         if (gTimer.current) clearTimeout(gTimer.current);
         if (e.key === "h") go("/");
-        else if (e.key === "w") go("/about");
+        else if (e.key === "d" && authed) go("/dash");
         else if (e.key === "c") go("/contact");
         else if (e.key === "i" && owner) go("/messages");
         else if (e.key === "l" && owner) go("/lab");
@@ -168,7 +168,7 @@ export function CommandLayer() {
                 ["Command palette", "⌘ K"],
                 ["New post", "n"],
                 ["Go to feed", "g h"],
-                ["Go to work", "g w"],
+                ["Go to profile", "g d"],
                 ["Go to contact", "g c"],
                 ...(owner ? [["Inbox", "g i"], ["The lab", "g l"]] : []),
                 ["Submit post / comment", "⌘ ↵"],

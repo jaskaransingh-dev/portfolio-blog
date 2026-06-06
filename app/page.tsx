@@ -4,14 +4,11 @@ import { getCurrentUser } from "@/lib/auth";
 import { SiteNav } from "@/components/SiteNav";
 import { Composer } from "@/components/Composer";
 import { PostCard, type FeedPost } from "@/components/PostCard";
-import { Avatar } from "@/components/Avatar";
-import { profile } from "@/lib/profile";
 
 export const dynamic = "force-dynamic";
-
 export const metadata = {
-  title: "Jaz Singh",
-  description: "Writing, building, and thinking out loud.",
+  title: "theblog",
+  description: "Writing, ideas, and things worth reading.",
 };
 
 async function getPosts(): Promise<FeedPost[]> {
@@ -36,48 +33,28 @@ export default async function Home() {
   return (
     <>
       <SiteNav user={user} />
+      <main className="mx-auto w-full max-w-2xl flex-1 px-5 pt-10 pb-20">
 
-      <main className="mx-auto w-full max-w-2xl flex-1 px-5 pt-12 pb-20">
-
-        {/* Intro strip */}
-        <div className="anim-fade-up flex items-start gap-4 pb-10 border-b border-border mb-10">
-          <Avatar src={profile.photo} initials={profile.initials} size={52} />
-          <div>
-            <p className="text-sm font-medium text-text">{profile.name}</p>
-            <p className="mt-1 text-sm leading-relaxed text-muted max-w-md">
-              Building{" "}
-              <a href="https://truemile.ai" target="_blank" rel="noreferrer" className="link-underline">
-                TrueMile
-              </a>
-              . Studying Statistics at UCLA. Writing here about software, markets, and whatever
-              else I&apos;m thinking about.{" "}
-              <Link href="/about" className="link-underline">
-                My work
-              </Link>
-              .
-            </p>
-          </div>
-        </div>
-
-        {/* Composer */}
-        {user && (
-          <div className="mb-8 anim-fade-up" style={{ animationDelay: "0.1s" }}>
+        {/* Composer or CTA */}
+        {user ? (
+          <div className="mb-8 anim-fade-up">
             <Composer displayName={user.displayName} />
           </div>
-        )}
-
-        {!user && (
-          <div className="mb-8 anim-fade-up rounded-xl border border-border px-4 py-3 text-sm text-muted" style={{ animationDelay: "0.1s" }}>
-            <Link href="/signup" className="link-amber font-medium">Create an account</Link>
-            {" "}to write or comment — no email verification, takes ten seconds.
+        ) : (
+          <div className="mb-8 anim-fade-up rounded-2xl border border-orange-mid bg-orange-dim px-5 py-4">
+            <p className="text-sm text-text">
+              <Link href="/signup" className="link font-semibold">Create an account</Link>
+              {" "}— write anything, comment on posts, join the conversation.
+              No email verification.
+            </p>
           </div>
         )}
 
         {/* Feed */}
         {posts.length === 0 ? (
-          <div className="anim-fade-up rounded-xl border border-dashed border-border p-12 text-center" style={{ animationDelay: "0.15s" }}>
+          <div className="rounded-2xl border border-dashed border-border p-14 text-center">
             <p className="text-sm text-muted">
-              {user ? "Nothing here yet — write the first post." : "No posts yet. Check back soon."}
+              {user ? "Nothing posted yet. Go first." : "Nothing here yet."}
             </p>
           </div>
         ) : (

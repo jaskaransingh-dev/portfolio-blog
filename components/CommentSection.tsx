@@ -63,10 +63,10 @@ export function CommentSection({
           </div>
         </form>
       ) : (
-        <p className="mt-4 text-sm text-muted">
-          <Link href="/login" className="link-amber">Sign in</Link>
+        <p className="mt-4 text-sm" style={{ color: "var(--muted)" }}>
+          <Link href="/login" className="link">Sign in</Link>
           {" "}or{" "}
-          <Link href="/signup" className="link-amber">create an account</Link>
+          <Link href="/signup" className="link">create an account</Link>
           {" "}to comment.
         </p>
       )}

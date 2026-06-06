@@ -75,7 +75,8 @@ export function Composer({ displayName }: { displayName: string }) {
     return (
       <button
         onClick={() => { setOpen(true); setTimeout(() => taRef.current?.focus(), 30); }}
-        className="flex w-full items-center justify-between rounded-xl border border-border bg-surface px-4 py-3 text-left text-sm text-muted-2 transition-colors hover:border-border-strong hover:text-muted"
+        className="flex w-full items-center justify-between rounded-xl border border-border bg-surface px-4 py-3 text-left text-sm transition-colors hover:border-orange-mid"
+        style={{ color: "var(--muted-2)" }}
       >
         <span>What&apos;s on your mind, {firstName}?</span>
         <kbd className="rounded border border-border px-1.5 py-0.5 font-mono text-[10px]">n</kbd>
@@ -84,7 +85,7 @@ export function Composer({ displayName }: { displayName: string }) {
   }
 
   return (
-    <div className="rounded-xl border border-border-strong bg-surface p-4 anim-slide-down">
+    <div className="rounded-xl border bg-surface p-4 anim-slide-down" style={{ borderColor: "var(--orange-mid)", boxShadow: "0 0 0 3px var(--orange-dim)" }}>
       <textarea
         ref={taRef}
         value={body}

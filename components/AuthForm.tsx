@@ -73,7 +73,7 @@ export function AuthForm({
         <div className="mb-1.5 flex items-center justify-between">
           <label className="text-xs text-muted-2">Password</label>
           {!isSignup && (
-            <Link href="/forgot-password" className="text-xs text-muted hover:text-text transition-colors">
+            <Link href="/forgot-password" className="text-xs link">
               Forgot password?
             </Link>
           )}
@@ -115,14 +115,14 @@ export function AuthForm({
         {loading ? "One moment..." : isSignup ? "Create account" : "Sign in"}
       </button>
 
-      <p className="text-center text-xs text-muted-2">
+      <p className="text-center text-xs" style={{ color: "var(--muted-2)" }}>
         {isSignup ? (
           <>Already have an account?{" "}
-            <Link href="/login" className="text-muted hover:text-text transition-colors">Sign in</Link>
+            <Link href="/login" className="link">Sign in</Link>
           </>
         ) : (
           <>New here?{" "}
-            <Link href="/signup" className="text-muted hover:text-text transition-colors">Create an account</Link>
+            <Link href="/signup" className="link">Create an account</Link>
           </>
         )}
       </p>

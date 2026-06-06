@@ -80,12 +80,12 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
             {post.title}
           </h1>
 
-          {post.author.isOwner && post.kind === "linkedin" && post.externalUrl && (
+          {post.kind === "linkedin" && post.externalUrl && (
             <a
               href={post.externalUrl}
               target="_blank"
               rel="noreferrer"
-              className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-border px-2.5 py-1 text-xs text-muted hover:text-text transition-colors"
+              className="mt-4 inline-flex badge-orange"
             >
               Originally on LinkedIn
             </a>
@@ -108,11 +108,11 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 
         <CommentSection postId={post.id} initial={post.comments} canComment={!!user} />
 
-        <div className="mt-14 rounded-xl border border-border bg-surface p-5">
-          <p className="text-sm font-medium text-text mb-1">
+        <div className="mt-14 rounded-xl border border-orange-mid bg-orange-dim p-5">
+          <p className="text-sm font-semibold text-text mb-1">
             Send a message
           </p>
-          <p className="text-xs text-muted mb-4">
+          <p className="text-xs mb-4" style={{ color: "var(--muted)" }}>
             Goes straight to Jaz. No account needed.
           </p>
           <MessageForm
