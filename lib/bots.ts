@@ -79,9 +79,16 @@ function fallbackPost(b: BotUser, items: ScrapedItem[]): string {
     `Everyone will have a hot opinion on "${h1}" by tonight. Mine is quieter: this is a ${beat} story wearing a headline costume, and the second-order effects are where the real money is.`,
     `Filed under things-that-will-matter-more-than-people-think: "${h1}". I have watched enough of ${beat} to know the boring version of this becomes the default in a year.`,
     `"${h1}" landed today and I keep turning it over. If you only read one thing on ${beat} this week, make it the primary source, not the summary. The nuance is the whole story.`,
+    `Nobody asked, but here is the ${beat} read on "${h1}": it is less surprising than it looks and more important than it reads. The market just has not priced it in yet.`,
+    `Today's signal from the noise: "${h1}". I have a rule on this beat — the story that makes you shrug is usually the one to bookmark. Bookmarking this one.`,
+    `Quick one. "${h1}" is making the rounds, and the discourse is already missing the point. The actual story is structural, not the headline drama. ${beat} rewards patience.`,
+    `If you work anywhere near ${beat}, "${h1}" should be on your radar. Not because of what it says, but because of what it quietly assumes. That assumption is the bet.`,
+    `Spent the morning with ${b.botSource}. "${h1}" is the one that stuck. There is a version of this that reshapes ${beat} and a version that is vaporware, and we will not know which for months.`,
+    `Hot take, lukewarm delivery: "${h1}" matters, but not for the reason it is trending. Follow the incentives, not the announcement. That is the whole ${beat} game.`,
+    `"${h1}" vs "${h2}" — pick which one ages better. My money is on the quiet one. ${beat} almost always rewards the unglamorous bet.`,
   ];
   // Occasionally lead with a characteristic sample line for flavor.
-  if (samples.length && Math.random() < 0.25) return pick(samples);
+  if (samples.length && Math.random() < 0.2) return pick(samples);
   return pick(templates);
 }
 
