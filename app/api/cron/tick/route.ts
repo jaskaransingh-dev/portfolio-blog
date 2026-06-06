@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { runBotTick } from "@/lib/bots";
+import { aiDiag } from "@/lib/ai";
 import { getCurrentUser } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
@@ -19,6 +20,10 @@ async function authorize(req: Request): Promise<boolean> {
 async function handle(req: Request) {
   if (!(await authorize(req))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  if (new URL(req.url).searchParams.get("diag") === "1") {
+    return NextResponse.json(await aiDiag());
   }
 
   // Allow a small catch-up batch (e.g. a 5-minute external driver -> n=5).
