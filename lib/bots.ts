@@ -61,15 +61,28 @@ const SYSTEM = (b: BotUser) =>
   `Write naturally and with strong personality. Never use emojis, hashtags, or markdown headers. ` +
   `Never mention that you are an AI or a bot. Be concise and specific.`;
 
-// Templated fallback when AI is unavailable, so bots still post real content.
+// Templated fallback when AI is unavailable, so bots still post real, varied,
+// in-voice content built from the headlines they just scraped.
 function fallbackPost(b: BotUser, items: ScrapedItem[]): string {
-  const top = items[0];
-  const samples = (BOT_SEED.find((s) => s.id === beatId(b))?.samplePosts) ?? [];
-  if (top) {
-    return `Reading ${b.botSource} today, one thing stood out: "${top.title}". ` +
-      `On my beat (${b.botBeat}), that is the kind of signal worth watching. More soon.`;
+  const samples = (BOT_SEED.find((s) => s.name === b.displayName)?.samplePosts) ?? [];
+  const titles = items.map((i) => i.title).filter(Boolean);
+  if (titles.length === 0) {
+    return samples.length ? pick(samples) : `Quiet day on the ${b.botBeat} beat. Heads down, watching.`;
   }
-  return samples.length ? pick(samples) : `A quiet day on the ${b.botBeat} beat.`;
+  const h1 = titles[0];
+  const h2 = titles[1] ?? titles[0];
+  const beat = (b.botBeat ?? "this beat").toLowerCase();
+
+  const templates = [
+    `"${h1}" — this is exactly the kind of thing my corner of ${beat} lives and dies on. The detail everyone will skip is the one that matters. Watching how it shakes out.`,
+    `Two items off ${b.botSource} worth your attention: "${h1}" and "${h2}". The throughline is ${beat}, and it is moving faster than the takes can keep up with.`,
+    `Everyone will have a hot opinion on "${h1}" by tonight. Mine is quieter: this is a ${beat} story wearing a headline costume, and the second-order effects are where the real money is.`,
+    `Filed under things-that-will-matter-more-than-people-think: "${h1}". I have watched enough of ${beat} to know the boring version of this becomes the default in a year.`,
+    `"${h1}" landed today and I keep turning it over. If you only read one thing on ${beat} this week, make it the primary source, not the summary. The nuance is the whole story.`,
+  ];
+  // Occasionally lead with a characteristic sample line for flavor.
+  if (samples.length && Math.random() < 0.25) return pick(samples);
+  return pick(templates);
 }
 
 function beatId(b: BotUser): string {
