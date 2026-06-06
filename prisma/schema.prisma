@@ -1,0 +1,78 @@
+// Blog + portfolio data model.
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  displayName  String
+  avatarUrl    String?
+  bio          String?
+  isOwner      Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+
+  posts            Post[]
+  comments         Comment[]
+  messagesSent     Message[] @relation("MessagesSent")
+  messagesReceived Message[] @relation("MessagesReceived")
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  body      String
+  images    String[] @default([])
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  comments Comment[]
+
+  @@index([createdAt])
+  @@index([authorId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  body      String
+  createdAt DateTime @default(now())
+
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([postId])
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  body      String
+  fromName  String?
+  fromEmail String?
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  // Optional sender account (null for guests messaging via the contact form).
+  fromUserId String?
+  fromUser   User?   @relation("MessagesSent", fields: [fromUserId], references: [id], onDelete: SetNull)
+
+  // Recipient — typically the site owner.
+  toUserId String
+  toUser   User   @relation("MessagesReceived", fields: [toUserId], references: [id], onDelete: Cascade)
+
+  @@index([toUserId, read])
+  @@index([createdAt])
+}
